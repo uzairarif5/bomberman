@@ -1,0 +1,212 @@
+body{
+    background-color: #444;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 52px 30px 505px auto;
+    justify-content: center;
+    text-align: center;
+    margin: 0px;
+    min-width: 1000px;
+    min-height: 100vh;
+}
+@font-face {
+    font-family: fontToUse;
+    src: url('Simonetta.ttf');
+}
+h1{
+    grid-column: 1;
+    align-self: flex-end;
+    letter-spacing: 4px;
+    color: #eee;
+    text-shadow: 3px 3px #111;
+    font-family: sans-serif;
+    font-size: 40px;
+    margin: 0px;
+    font-family: 'fontToUse';
+}
+#canvasDiv{
+    grid-column: 1;
+    position: relative;
+}
+canvas{
+    position: absolute;
+    top: 0;
+    box-sizing: border-box;
+    border: #111 4px solid;
+}
+h2{
+    grid-column: 1;
+    color: #ccc;
+    align-self: flex-start;
+    font-family: sans-serif;
+    font-size: 20px;
+    margin: 0px;
+    line-height: 25px;
+    font-family: 'fontToUse';
+}
+#bottomMessage{
+    margin-bottom: 10px;
+    text-shadow: 2px 2px #111;
+
+}
+#chatDiv{
+    width: 100%;
+    height: 100%;
+    grid-row: 1 / span 4;
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: 86% 4% 10%;
+}
+#showChat{
+    box-sizing: border-box;
+    border-left: #111 solid 5px;
+    border-bottom: #111 solid 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #ccc;
+}
+#sendChat{ 
+    font-family: "fontToUse";
+    font-weight: bold;
+    color:#aaa;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-left: #111 solid 5px;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@font-face {
+    font-family: textFont;
+    src: url('SF_Cartoonist_Hand.ttf');
+}
+.chatMessage{
+    font-family: "textFont";
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 22px;
+    text-align: left;
+    margin: 0px;
+    padding-bottom: 5px;
+    letter-spacing: 1px;
+}
+#messageArea{
+    font-family: "textFont";
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 25px;
+    letter-spacing: 1px;
+    background-color: #aaa;
+    box-sizing: border-box;
+    border-left: #111 solid 5px;
+    border-top: #111 solid 3px;
+    resize: none;
+    outline: none;
+}
+
+img{
+    display: none;
+}
+div{
+    margin:0;
+}
+#startOuter{
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:rgba(10,10,10,0.5);
+}
+#startInner{
+    display: none;
+    width: 700px;
+    background-color: #aaa;
+    border: #444 5px solid;
+    border-radius: 20px;
+    margin-bottom: 100px;
+}
+#playerNum{
+    display: grid;
+    grid-template-columns: 34% 22% 22% 22%;
+    margin: 20px;
+}
+#pnText{
+    text-align: left;
+    padding: 0px;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+    padding: 0px;
+    font-family: 'fontToUse';
+    line-height: 50px;
+}
+.numOptions{
+    width: 40px;
+    height: 40px;
+    border: #555 5px ridge;
+    background-color: #999;
+    font-family: 'fontToUse';
+    line-height: 40px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+#option1{
+    background-color: #0c0;
+}
+#startGameOuter{
+    display: flex;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
+}
+#startGameInner{
+    width: 160px;
+    background-color: #666;
+    border: #888 3px groove;
+    border-radius: 10px;
+    font-family: 'fontToUse';
+    line-height: 40px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    user-select: none;
+    margin: 25px;
+    cursor: pointer;
+}
+#hostIsCreatingGame{
+    width: 160px;
+    font-family: 'fontToUse';
+    line-height: 40px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    user-select: none;
+    display: none;
+    width: 700px;
+    background-color: #aaa;
+    border: #444 5px solid;
+    border-radius: 10px;
+    margin-bottom: 100px;
+}
+#waiting{
+    width: 160px;
+    font-family: 'fontToUse';
+    line-height: 45px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    user-select: none;
+    display: none;
+    width: 700px;
+    background-color: #aaa;
+    border: #444 5px solid;
+    border-radius: 10px;
+    margin-bottom: 100px;
+}

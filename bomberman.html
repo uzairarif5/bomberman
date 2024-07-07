@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bomberman</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="bomberman.css">   
+</head>
+<body>
+<h1>BomberMan</h1>
+<h2 id='colorMessage'>Loading...</h3>
+<div id="canvasDiv" >
+	<canvas id="myCanvas" width="486"></canvas>
+	<canvas id="myCanvas2" width="486"></canvas>
+</div>
+<h2 id='bottomMessage'>Controls: W, A, S, D to move and F to plant a bomb</h2>
+<div id="chatDiv">
+	<div id="showChat">
+	</div>
+	<div id="sendChat" onclick="sendText()"><span>click to send ></span></div>
+	<textarea id="messageArea"></textarea>
+</div>
+
+<img id="rock" src="rock.png">
+<img id="bombCartoon" src="bomb.png">
+<img id="num" src="num.png">
+<img id="power" src="power.png">
+<img id="explosion" src="explosion.png">
+
+<div id="startOuter">
+	<div id="startInner">
+		<div id="playerNum">
+			<div id="pnText">Number of Players:</div>
+			<div id="option1" class="numOptions" onclick = "numOptions(event)">2</div>
+			<div id="option2" class="numOptions" onclick = "numOptions(event)">3</div>
+			<div id="option3" class="numOptions" onclick = "numOptions(event)">4</div>
+		</div>
+		<div id="startGameOuter"><div id="startGameInner" onclick = "startgame()">Start Game</div></div>
+	</div>
+	<div id="hostIsCreatingGame">Waiting for the game to be started...</div>
+	<div id="waiting">Waiting for other players...</div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="bomberman.js"></script>
+<script>
+	var socket = io();
+	var allPlayers = [getPlayer('red',0,0), getPlayer('blue',lastx,lasty), getPlayer('green',lastx,0), getPlayer('yellow',0,lasty)];
+	var playerNum;
+	var maxPlayers;
+	var curnum;
+	var color;
+	var startPosx;
+	var startPosy;
+	var thisplayer;
+	var otherLoaded = false;
+	socket.on('message', function(data){
+		if(data.msgFor == 'start'){
+			playerNum = 1;
+			$.getScript("bombermanP1.js");
+			$("#startOuter").animate({opacity:1},200);
+			$("#startInner").show(400);
+		}
+		else if(data.msgFor == 'others'){
+			$.getScript("bombermanOther.js");
+			$("#startInner").css('display','none');
+			$("#startOuter").animate({opacity:1},200);
+			$("#hostIsCreatingGame").show(400);
+			playerNum = data.Pnum;
+			if(playerNum == 2){
+				thisplayer = allPlayers[1];
+			}
+			else if(playerNum == 3){
+				thisplayer = allPlayers[2];
+			}
+			else{
+				thisplayer = allPlayers[3];
+			}
+		}
+		socket.on('getCanvas',(msg)=>{
+			if(playerNum>1){
+				function checkLoading(){
+					if(otherLoaded){
+						fillCanvas(msg);
+					}
+					else{
+						setTimeout(()=>{checkLoading()},100);
+					}
+				}
+				$(document).ready(()=>{
+					checkLoading();
+				})
+			}
+		})
+		socket.on('getMax',function(msg){
+			maxPlayers = msg;
+		})
+		socket.on('putMsg',function(msg){
+			$("#showChat").append('<p class="chatMessage" style="color:' + msg.color + '">'+msg.Message+'</p>');
+		})
+		socket.on('getnum',function(msg){
+			curnum = msg;
+			if(curnum >= maxPlayers&&maxPlayers>-1){
+				socket.emit('startGame');
+			}
+		})
+		socket.on('removeWaiting', (allowStart) => {
+			setTimeout(()=>{
+				if(allowStart){
+					if(playerNum <= maxPlayers){
+						$("#startOuter").animate({opacity:0},200);
+						$("#startOuter").hide(300);
+						for(var k = 0;k<maxPlayers;k++){
+							allPlayers[k].alive = true;
+							allPlayers[k].setStartPos();
+						}
+						$(document.body).on('keydown', () => {
+							keyPressed(event,thisplayer);
+						})
+						socket.on('giveKeyPress',(msg)=>{
+							actKey(allPlayers[msg.Number-1],msg.key);
+						})
+						console.log(thisplayer.getColor());
+						$("#colorMessage").html("You are <span style='color:"+thisplayer.color+"'>" + thisplayer.color + "</span>");
+					}
+					else if((playerNum > maxPlayers)){
+						$("#hostIsCreatingGame").text('There are not enough players.')
+					}
+					socket.on('connectError',() => {
+						$("#startOuter").show(1);
+						$("#startOuter").animate({opacity:1},400);
+						$("#waiting").text("Someone left the game. Restart Required");
+						$("#hostIsCreatingGame").css('display','none');
+						$("#waiting").show(400);
+						socket.disconnect();
+					})
+					socket.on('showWinner',(msg) => {
+						$("#startOuter").show(1);
+						$("#startOuter").animate({opacity:1},400);
+						$("#waiting").text(players[msg].color + " won the game!");
+						$("#hostIsCreatingGame").css('display','none');
+						$("#waiting").show(400);
+						socket.disconnect();
+					})
+				}
+				else{
+					$("#hostIsCreatingGame").text('Game has already started.')
+				}
+			},1000)
+		})
+	});
+</script>
+</body>
+</html>
